@@ -94,26 +94,42 @@ function formatDoc(cb) {
   for (var i = 0, len = monthlyArchive.length; i < len; i++) {
     var p = monthlyArchive[i];
     var out = '<br /><br />';
-    var excerptLength = 200;
-    var msg = '';
-    if (p.message) {
-      msg += p.message.substr(0, excerptLength);
-      msg = msg.replace(/\n/g, ' ');
-      if (p.message.length > excerptLength) {
-        msg = msg.replace(/\.+$/, '')
-        msg += '...';
-      }
-      msg = msg.replace(/\>/g, '&#62;')
-               .replace(/\</g, '&#60;');
-    } else {
-      msg += '...';
+    var quote = '';
+    out += formatName(p.from);
+
+    switch (p.type) {
+      case 'status':
+        if (p.message) {
+          out += ' wrote';
+          quote = p.message;
+        } else if (p.status_type === 'created_note') {
+          out += ' created a doc';
+        } else {
+          out += ' posted something';
+        }
+        break;
+      case 'link':
+      case 'photo':
+      case 'video':
+      default:
+        out += ' shared a ' + p.type;
+        var temp = [];
+        if (p.message) {
+          temp.push(p.message);
+        }
+        if (p.name) {
+          temp.push(p.name);
+        }
+        if (p.description) {
+          temp.push(p.description);
+        }
+        quote += temp.join(' - ');
     }
-    out += '<blockquote>' + msg + '</blockquote>';
+    var trimmedQuote = trimStr(quote, 200);
+    trimmedQuote = trimmedQuote.replace(/\>/g, '&#62;')
+                               .replace(/\</g, '&#60;');
+    out += '<blockquote>' + trimmedQuote + '</blockquote>';
     var meta = [];
-    var name = formatName(p.from);
-    if (name) {
-      meta.push(name);
-    }
     var dateObj = new Date(p.created_time);
     var date = formatDate(dateObj);
     if (date) {
@@ -140,6 +156,17 @@ function formatName(obj) {
     return obj.name;
   }
   return '';
+}
+
+function trimStr(str, len) {
+  var trimmed = str.substr(0, len);
+  trimmed = trimmed.replace(/\n/g, ' ');
+  if (str.length > len) {
+    trimmed = trimmed.replace(/\.+$/, '')
+    trimmed = trimmed.replace(/\s.{0,10}$/, '')
+    trimmed += '...';
+  }
+  return trimmed;
 }
 
 function formatDate(dateObj) {
