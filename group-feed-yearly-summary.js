@@ -123,7 +123,7 @@ function formatDoc(cb) {
   doc += '</ul>';
   doc += '<br />';
   doc += '<br />';
-  doc += '<big>Posts with 20+ comments</big>';
+  doc += '<big>Posts with 20+ likes</big>';
   doc += '<br />';
   doc += '<small>(The figures were recorded at ' + nowStr + ')</small>';
   doc += '<ul>';
