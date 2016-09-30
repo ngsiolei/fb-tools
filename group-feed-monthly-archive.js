@@ -39,6 +39,7 @@ function fetchPosts(accessToken, nextUrl, cb) {
       options.path = u.path;
     } else {
       cb('invalid nextUrl: ' + nextUrl);
+      return;
     }
   }
   var req = https.request(options, function (res) {
