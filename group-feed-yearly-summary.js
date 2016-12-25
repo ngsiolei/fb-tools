@@ -94,7 +94,7 @@ function formatDoc(cb) {
     var p = posts[i];
     var dateObj = new Date(p.created_time);
     var yr = dateObj.getFullYear();
-    if (yr === 2015) {
+    if (yr === year) {
       if (p.comments.summary.total_count > 20) {
         mostCommented.push(p);
       }
